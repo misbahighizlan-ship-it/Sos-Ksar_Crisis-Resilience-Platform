@@ -50,3 +50,18 @@ export const verification = pgTable("verification", {
     createdAt: timestamp("createdAt"),
     updatedAt: timestamp("updatedAt"),
 });
+
+export const urgency = pgTable("urgency", {
+    id: text("id").primaryKey(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    severity: text("severity").$type<"low" | "medium" | "high" | "critical">().notNull(),
+    location: text("location").notNull(),
+    imageUrl: text("imageUrl"), // Optional image URL or Base64
+    status: text("status").$type<"pending" | "investigating" | "resolved">().default("pending").notNull(),
+    userId: text("userId")
+        .notNull()
+        .references(() => user.id),
+    createdAt: timestamp("createdAt").notNull(),
+    updatedAt: timestamp("updatedAt").notNull(),
+});
