@@ -2,18 +2,21 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Chrome, ArrowRight, ShieldAlert, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 
-export default function LoginPage() {
+function LoginContent() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackURL = searchParams.get("callbackURL") || "/";
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,21 +26,21 @@ export default function LoginPage() {
         const { error } = await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/",
+            callbackURL,
         });
 
         if (error) {
             setError(error.message || "Invalid email or password");
             setLoading(false);
         } else {
-            router.push("/");
+            router.push(callbackURL);
         }
     };
 
     const handleGoogleSignIn = async () => {
         await authClient.signIn.social({
             provider: "google",
-            callbackURL: "/",
+            callbackURL,
         });
     };
 
@@ -164,5 +167,13 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+            <LoginContent />
+        </Suspense>
     );
 }
