@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   },
   reactCompiler: true,
   images: {
-    domains: ['images.unsplash.com', 'img.freepik.com'],
+    domains: ['images.unsplash.com', 'img.freepik.com', 'lh3.googleusercontent.com'],
   },
 };
 
