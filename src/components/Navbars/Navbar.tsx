@@ -4,13 +4,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ShieldAlert } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -27,8 +28,8 @@ const Navbar = () => {
 
     const navLinks = [
         { name: "Home", href: "/" },
-        { name: "About", href: "#about" },
-        { name: "Contact", href: "#contact" },
+        { name: "About", href: "/about" },
+        { name: "Contact", href: "/contact" },
     ];
 
     return (
@@ -68,8 +69,8 @@ const Navbar = () => {
                                     pathname === link.href
                                         ? "text-primary"
                                         : isScrolled
-                                        ? "text-foreground/80"
-                                        : "text-white"
+                                            ? "text-foreground/80"
+                                            : "text-white"
                                 )}
                             >
                                 {link.name}
@@ -78,10 +79,14 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex items-center gap-3 pl-6 border-l border-border/20">
-                        <Button variant="ghost" size="sm" className="hidden lg:flex cursor-pointer">
+                        <Button variant="ghost" size="sm" className="hidden lg:flex cursor-pointer"
+                            onClick={() => router.push("/login")}
+                        >
                             Login
                         </Button>
-                        <Button variant="outline" size="sm" className="hidden lg:flex cursor-pointer">
+                        <Button variant="outline" size="sm" className="hidden lg:flex cursor-pointer"
+                            onClick={() => router.push("/register")}
+                        >
                             Register
                         </Button>
                         <Button
