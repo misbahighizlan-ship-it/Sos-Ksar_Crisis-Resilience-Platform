@@ -153,16 +153,23 @@ const Navbar = () => {
 
                                 {isProfileOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
-                                        <Link
-                                            href="/profile"
-                                            onClick={() => setIsProfileOpen(false)}
-                                            className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                        >
-                                            {session.user.role === "volunteer" ||
-                                                session.user.role === "admin"
-                                                ? "Volunteer Dashboard"
-                                                : "My Profile"}
-                                        </Link>
+               <Link
+    href={
+        session.user.role === "admin"
+            ? "/admin/profile"
+            : "/profile"
+    }
+    onClick={() => setIsProfileOpen(false)}
+    className="block px-4 py-2 text-sm hover:bg-gray-100"
+>
+    {session.user.role === "volunteer"
+        ? "Volunteer Dashboard"
+        : session.user.role === "admin"
+        ? "Admin Dashboard"
+        : "My Profile"}
+</Link>
+
+
 
                                         <button
                                             onClick={() => {

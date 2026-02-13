@@ -79,6 +79,8 @@ const RoleNavbarClient = ({ session }: RoleNavbarClientProps) => {
                 { name: "Manage Users", href: "/users" },
                 { name: "Manage Reports", href: "/reports" },
                 { name: "Add Urgence", href: "/reports/new" },
+                { name: "Admin Section", href: "/admin" }
+
             ];
         }
 
