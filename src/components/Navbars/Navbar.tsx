@@ -51,8 +51,8 @@ const Navbar = () => {
 
     const navLinks = [
         { name: "Home", href: "/" },
-        { name: "About", href: "/#about" },
-        { name: "Contact", href: "/#contact" },
+        { name: "About", href: "/about" },
+        { name: "Contact", href: "/contact" },
     ];
 
     interface NavItem {
@@ -102,24 +102,7 @@ const Navbar = () => {
                 {/* Desktop */}
                 <div className="hidden md:flex items-center gap-8">
                     <div className="flex items-center gap-6">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className={cn(
-                                    "text-sm font-medium hover:text-primary transition-colors",
-                                    pathname === link.href
-                                        ? "text-primary"
-                                        : isScrolled
-                                            ? "text-foreground/80"
-                                            : "text-white"
-                                )}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-
-                        {roleLinks.map((link) => (
+                        {[...navLinks, ...roleLinks].map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
@@ -138,6 +121,12 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex items-center gap-3 pl-6 border-l border-border/20">
+                        <Button
+                            size="sm"
+                            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 cursor-pointer"
+                        >
+                            Report Emergency
+                        </Button>
                         {isPending ? (
                             <div className="text-sm text-muted-foreground">Loading...</div>
                         ) : session ? (
@@ -154,23 +143,21 @@ const Navbar = () => {
 
                                 {isProfileOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
-               <Link
-    href={
-        session.user.role === "admin"
-            ? "/admin/profile"
-            : "/profile"
-    }
-    onClick={() => setIsProfileOpen(false)}
-    className="block px-4 py-2 text-sm hover:bg-gray-100"
->
-    {session.user.role === "volunteer"
-        ? "Volunteer Dashboard"
-        : session.user.role === "admin"
-        ? "Admin Dashboard"
-        : "My Profile"}
-</Link>
-
-
+                                        <Link
+                                            href={
+                                                session.user.role === "admin"
+                                                    ? "/admin/profile"
+                                                    : "/profile"
+                                            }
+                                            onClick={() => setIsProfileOpen(false)}
+                                            className="block px-4 py-2 text-sm hover:bg-gray-100"
+                                        >
+                                            {session.user.role === "volunteer"
+                                                ? "Volunteer Dashboard"
+                                                : session.user.role === "admin"
+                                                    ? "Admin Dashboard"
+                                                    : "My Profile"}
+                                        </Link>
 
                                         <button
                                             onClick={() => {
@@ -212,6 +199,79 @@ const Navbar = () => {
                     {isMobileMenuOpen ? <X /> : <Menu />}
                 </button>
             </div>
+
+            {/* Mobile Menu */}
+            {isMobileMenuOpen && (
+                <div className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 md:hidden flex flex-col gap-4 shadow-xl animate-in slide-in-from-top-2">
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            className="py-2 text-lg font-medium border-b border-border/10 last:border-0 cursor-pointer"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                    <div className="flex flex-col gap-3 mt-4">
+                        {isPending ? (
+                            <div className="text-sm text-muted-foreground text-center">Loading...</div>
+                        ) : session ? (
+                            <>
+                                <div className="text-sm font-bold px-2 py-1 text-primary">
+                                    {session.user.name}
+                                </div>
+                                <Link
+                                    href={session.user.role === "admin" ? "/admin/profile" : "/profile"}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="py-2 text-lg font-medium border-b border-border/10 last:border-0"
+                                >
+                                    Dashboard
+                                </Link>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        handleSignOut();
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                >
+                                    Sign Out
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        setIsMobileMenuOpen(false);
+                                        router.push("/login");
+                                    }}
+                                >
+                                    Login
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        setIsMobileMenuOpen(false);
+                                        router.push("/register");
+                                    }}
+                                >
+                                    Register
+                                </Button>
+                            </>
+                        )}
+                        <Button
+                            className="w-full justify-center bg-primary text-white cursor-pointer"
+                            onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                router.push("/report");
+                            }}
+                        >
+                            Report Emergency
+                        </Button>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 };

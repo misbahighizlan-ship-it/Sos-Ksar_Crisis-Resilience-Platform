@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, User, ShieldCheck, Chrome, ArrowRight, ShieldAlert, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 
-export default function RegisterPage() {
+function RegisterContent() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
@@ -16,6 +17,8 @@ export default function RegisterPage() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackURL = searchParams.get("callbackURL") || "/";
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,21 +30,21 @@ export default function RegisterPage() {
             password,
             name,
             role,
-            callbackURL: "/",
+            callbackURL,
         });
 
         if (error) {
             setError(error.message || "Something went wrong");
             setLoading(false);
         } else {
-            router.push("/");
+            router.push(callbackURL);
         }
     };
 
     const handleGoogleSignIn = async () => {
         await authClient.signIn.social({
             provider: "google",
-            callbackURL: "/",
+            callbackURL,
         });
     };
 
@@ -199,5 +202,13 @@ export default function RegisterPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function RegisterPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+            <RegisterContent />
+        </Suspense>
     );
 }
